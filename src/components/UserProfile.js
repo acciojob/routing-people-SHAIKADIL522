@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const UserDetails = () => {
+const UserProfile = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -10,16 +10,22 @@ const UserDetails = () => {
     setLoading(true);
     setUser(null);
 
-    fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setUser(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch user details:", error);
-        setLoading(false);
-      });
+    // setTimeout ensures the Loading... state renders to the DOM
+    // before the fetch begins — critical for Cypress intercept timing
+    const timer = setTimeout(() => {
+      fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setUser(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch user details:", error);
+          setLoading(false);
+        });
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [id]);
 
   if (loading) {
@@ -41,4 +47,4 @@ const UserDetails = () => {
   );
 };
 
-export default UserDetails;
+export default UserProfile;
