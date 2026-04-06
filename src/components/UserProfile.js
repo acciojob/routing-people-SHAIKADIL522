@@ -23,7 +23,7 @@ const UserProfile = () => {
           console.error("Failed to fetch user details:", error);
           setLoading(false);
         });
-    }, 0);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, [id]);
